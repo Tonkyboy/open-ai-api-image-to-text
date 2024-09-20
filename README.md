@@ -2,7 +2,9 @@
 
 # Video
 Video ist here, check it out!
-[How to Master Open AI API: 5 Steps for Image to Text Integration]([https://youtu.be/5PuU3gEzdWk](https://youtu.be/yuegVnYr4Uo))
+[How to Master Open AI API: 5 Steps for Image to Text Integration]([https://youtu.be/yuegVnYr4Uo]())
+
+
 
 ## Basic Code
 -> openai-api.py
