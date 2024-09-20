@@ -9,7 +9,9 @@ Video ist here, check it out!
 
 ## Flask
 -> app.py
+
 -> static/images
+
 -> templates/index.html
 
 ## Commands
