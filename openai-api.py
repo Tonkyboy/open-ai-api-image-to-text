@@ -6,7 +6,7 @@ import base64
 load_dotenv()
 
 # Your Prompt
-prompt = "What do oyu see on this image?"
+prompt = "What do you see on this image?"
 
 # Image file path
 image_path = "images/red-ballon-image.jpeg"
