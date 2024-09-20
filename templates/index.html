@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image and Prompt Upload</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%; /* Ensure form stays within the parent container */
+            box-sizing: border-box; /* Ensure padding is included in the width */
+        }
+
+        label {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"], textarea {
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%; /* Ensure input field takes full width of container */
+            box-sizing: border-box; /* Include padding and borders in the width calculation */
+        }
+
+        textarea {
+            height: 150px;
+        }
+
+        .dropzone {
+            border: 2px dashed #ccc;
+            padding: 50px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 20px;
+            width: 100%; /* Make the dropzone fill the available width */
+            box-sizing: border-box; /* Ensure padding and border are included */
+        }
+
+        .dropzone.dragover {
+            border-color: #0066cc;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            width: 100%; /* Make buttons take full width of the parent container */
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+        }
+
+        button:hover {
+            background-color: #005bb5;
+        }
+
+        #clearButton {
+            background-color: #ff6666;
+        }
+
+        #clearButton:hover {
+            background-color: #e60000;
+        }
+
+        #result {
+            display: flex;
+            flex-direction: column;
+            max-width: 1000px;
+            margin: 0 auto;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e9ffe9;
+            border: 1px solid #b3ffb3;
+            border-radius: 5px;
+            word-wrap: break-word; /* Ensure long words break properly */
+        }
+
+        #result textarea {
+            width: 100%;  /* Make textarea take full width of the parent div */
+            max-width: 100%;  /* Ensure it doesn't overflow */
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box; /* Ensure padding is included in the width */
+            overflow-wrap: break-word;  /* Make sure the text inside breaks properly */
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Image and Prompt Upload</h1>
+    <form action="/" method="POST" enctype="multipart/form-data" id="uploadForm">
+        <label for="prompt">Prompt:</label>
+        <input type="text" name="prompt" placeholder="Enter your prompt" required>
+
+        <label for="image">Upload Image (Drag & Drop or Select File):</label>
+        <div class="dropzone" id="dropzone">Drag & Drop Image Here</div>
+        <input type="file" name="image" accept="image/*" style="display: none;" id="fileInput" required>
+
+        <div class="buttons">
+            <button type="submit">Submit</button>
+            <button type="button" id="clearButton">Clear</button>
+        </div>
+    </form>
+
+    {% if response_text %}
+        <div id="result">
+            <h2>Response:</h2>
+            <textarea readonly>{{ response_text }}</textarea>
+        </div>
+    {% endif %}
+
+    {% if error_message %}
+        <p style="color: red;">{{ error_message }}</p>
+    {% endif %}
+
+    <script>
+        // Drag-and-drop image upload logic
+        const dropzone = document.getElementById("dropzone");
+        const fileInput = document.getElementById("fileInput");
+
+        dropzone.addEventListener("dragover", function(e) {
+            e.preventDefault();
+            dropzone.classList.add("dragover");
+        });
+
+        dropzone.addEventListener("dragleave", function() {
+            dropzone.classList.remove("dragover");
+        });
+
+        dropzone.addEventListener("drop", function(e) {
+            e.preventDefault();
+            dropzone.classList.remove("dragover");
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;  // Assign dropped files to hidden input
+                dropzone.textContent = files[0].name;  // Show file name
+            }
+        });
+
+        dropzone.addEventListener("click", function() {
+            fileInput.click();  // Trigger file input on dropzone click
+        });
+
+        fileInput.addEventListener("change", function() {
+            if (fileInput.files.length > 0) {
+                dropzone.textContent = fileInput.files[0].name;  // Show file name when selected via input
+            }
+        });
+
+        // Clear form logic
+        const clearButton = document.getElementById("clearButton");
+        clearButton.addEventListener("click", function() {
+            // Reset form inputs
+            document.getElementById("uploadForm").reset();
+
+            // Reset dropzone text
+            dropzone.textContent = "Drag & Drop Image Here";
+
+            // Clear the result field if it exists
+            const resultDiv = document.getElementById("result");
+            if (resultDiv) {
+                resultDiv.remove();
+            }
+        });
+    </script>
+</body>
+</html>
